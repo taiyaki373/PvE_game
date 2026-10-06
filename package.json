@@ -1,0 +1,22 @@
+{
+  "name": "earth-guard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server.cjs",
+    "start": "node server.cjs",
+    "check": "node --check src/game.js && node --check src/city.js && node --check src/combat.js && node --check src/enemies.js && node --check src/rules.js && node --check src/network.js && node --check server.cjs && node --check server/engine.cjs && node --check src/touch.js",
+    "test": "node --test tests/*.test.cjs",
+    "test:browser": "node tests/browser-smoke.cjs",
+    "test:mobile": "node tests/mobile-smoke.cjs"
+  },
+  "dependencies": {
+    "ws": "^8.22.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

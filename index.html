@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>EARTH GUARD — 地球防衛作戦</title><link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+  <canvas id="game" aria-label="敵性ドローンから街を守るシューティングゲーム"></canvas>
+  <div class="vignette"></div>
+  <header><a class="brand" href="./"><span class="brand-icon">✳</span> EARTH GUARD <small>防衛局 / DEFENSE DIVISION</small></a><div class="connection"><i></i> SYSTEM ONLINE <span>JP–07</span></div></header>
+  <main id="menu" class="menu">
+    <div class="eyebrow"><span></span> OPERATION 001 / TOKYO BAY</div>
+    <h1>この星を、<br>明け渡すな<span>。</span></h1>
+    <p class="intro">敵性機械、接近。都市防衛ラインを死守せよ。<br>最後の防衛隊員は、あなただ。</p>
+    <button id="start">出撃する <span>DEPLOY →</span></button>
+    <button id="online-open" class="online-open">オンライン協力 <span>1–10 PLAYERS →</span></button>
+    <div class="controls"><div><kbd>W A S D</kbd> 移動</div><div><kbd>左 / 右クリック</kbd> 射撃 / ADS</div><div><kbd>R</kbd> リロード</div><div><kbd>SPACE</kbd> 回避</div></div>
+    <div class="brief"><span>MISSION BRIEF</span><p>湾岸地区に発生した敵性ドローンを排除。<br>全5ウェーブを制圧し、生還せよ。</p></div>
+  </main>
+  <aside id="operation"><div class="tag">LIVE THREAT ASSESSMENT</div><div class="threat">敵性機械群 <span>CLASS α</span></div><div class="threat-line"></div><div class="stats"><div><small>脅威レベル</small><strong>CRITICAL</strong></div><div><small>作戦区域</small><strong>TOKYO BAY</strong></div></div><div class="coordinates">35°37′N &nbsp; 139°47′E <span>●</span></div></aside>
+  <div id="hud" class="hidden"><div class="mission"><small>OPERATION / TOKYO BAY</small><b id="wave">WAVE 01 / 05</b><span id="remaining">敵を排除せよ</span></div><div id="boss-hud" class="hidden"><div class="boss-heading"><span id="boss-name"></span><b id="boss-hp"></b></div><div class="boss-bar"><i id="boss-hpbar"></i></div><small id="boss-state"></small></div><div id="crosshair"><span></span></div><div id="combat-messages" aria-label="戦闘情報"><div id="notice"></div><div id="hit-feedback"></div><div id="supply-notice" role="status"></div><div id="enemy-intel"></div><span id="reload">R リロード</span></div><div id="danger-warning" role="status"></div><div class="hud-bottom"><div class="health"><small>ARMOR / 装甲</small><b id="hp">100 <em>/ 100</em></b><div class="bar"><i id="hpbar"></i></div></div><div class="weapon"><small id="weapon-name">AR–27 / アサルトライフル</small><b id="ammo">30 <em>/ 120</em></b></div></div><div class="kill-counter">ELIMINATED <b id="kills">00</b></div><div class="hint">WASD 移動 &nbsp; 左クリック 射撃 / 右クリック ADS &nbsp; R リロード &nbsp; SPACE 回避 &nbsp; ESC / P 設定</div></div>
+  <div id="result" class="hidden"><small id="result-label">OPERATION REPORT</small><h2 id="result-title"></h2><p id="result-text"></p><button id="restart">再出撃 <span>REDEPLOY →</span></button></div>
+  <footer id="footer"><span>01 — THE FIRST CONTACT</span><span>地球防衛作戦 <i> / </i> EARTH GUARD</span><span>STAND YOUR GROUND.</span></footer>
+  <button id="settings-open" aria-controls="settings" aria-expanded="false">⚙ 設定</button>
+  <div id="squad-hud" class="hidden"><div><b>CO-OP <span id="squad-count">1 / 10</span></b><span>ROOM <b id="network-room"></b></span><small id="network-latency"></small></div><p id="squad-members"></p><small id="network-status"></small><button id="squad-leave">ルーム設定</button></div>
+  <section id="online" class="hidden" role="dialog" aria-modal="true" aria-labelledby="online-title">
+    <div class="online-panel"><small>SQUAD OPERATIONS / 最大10人</small><h2 id="online-title">一緒に、この街を守ろう。</h2><p>参加者は全員味方。味方へのダメージなし。敵撃破で全員に弾薬補給。</p>
+      <div id="online-connect">
+        <label for="online-name">隊員名</label><input id="online-name" maxlength="16" value="隊員" autocomplete="nickname">
+        <label for="online-weapon">出撃武器</label><select id="online-weapon"><option value="ar">アサルトライフル / バランス型</option><option value="smg">サブマシンガン / 近距離・高速連射</option><option value="sniper">スナイパー / 長射程・高威力</option><option value="rocket">ロケットランチャー / 爆風・群れ対策</option></select>
+        <button id="online-create">新しいルームを作る →</button><div class="join-divider">または、友達のルームに参加</div>
+        <label for="online-code">6文字のルームコード</label><div class="online-join-row"><input id="online-code" maxlength="6" placeholder="ABC123" autocomplete="off"><button id="online-join">参加する</button></div>
+        <button id="online-back" class="secondary">戻る</button>
+      </div>
+      <div id="online-lobby" class="hidden"><div class="room-banner"><div><small>ROOM CODE</small><strong id="online-room-code"></strong></div><b id="online-player-count"></b></div><button id="online-copy" class="secondary">招待URLをコピー</button><p id="online-scaling"></p><div id="online-roster"></div><p id="online-waiting"></p><div class="online-actions"><button id="online-ready">準備完了にする</button><button id="online-start">全員で出撃 →</button></div><button id="online-leave" class="secondary">ルームを退出</button></div>
+      <p id="online-error" role="status"></p>
+    </div>
+  </section>
+  <section id="loadout" class="hidden" role="dialog" aria-modal="true" aria-labelledby="loadout-title">
+    <div class="loadout-panel"><small>PREPARE FOR DEPLOYMENT / 装備選択</small><h2 id="loadout-title">あなたの戦い方を、選べ。</h2>
+      <p>武器を1つ選んで出撃。弾薬は有限。敵の撃破で予備弾を自動補給。</p>
+      <div class="weapon-options">
+        <button id="weapon-smg" class="weapon-card" aria-pressed="false"><span class="weapon-code">01 / CLOSE QUARTERS</span><strong>サブマシンガン</strong><em>SMG–9</em><p>高速連射・軽量。近距離に強く、遠距離では威力が落ちる。</p><div>威力 20 · 923 RPM · 装填 40<br>予備 160発 / 撃破補給 +14発</div></button>
+        <button id="weapon-ar" class="weapon-card selected" aria-pressed="true"><span class="weapon-code">02 / ALL ROUNDER</span><strong>アサルトライフル</strong><em>AR–27</em><p>威力・連射・射程のバランス型。あらゆる交戦距離に対応。</p><div>威力 30 · 522 RPM · 装填 30<br>予備 120発 / 撃破補給 +10発</div></button>
+        <button id="weapon-sniper" class="weapon-card" aria-pressed="false"><span class="weapon-code">03 / PRECISION</span><strong>スナイパー</strong><em>SR–80</em><p>高威力・長射程。連射は遅い。右クリックで精密スコープ。</p><div>威力 165 · 52 RPM · 装填 5<br>予備 25発 / 撃破補給 +2発</div></button>
+        <button id="weapon-rocket" class="weapon-card" aria-pressed="false"><span class="weapon-code">04 / HEAVY SUPPORT</span><strong>ロケットランチャー</strong><em>RL–6</em><p>隣接した敵を爆風で巻き込む。爆風の直径8m。内側80％は全威力、外側は75％。リロード2.3秒。</p><div>最大威力 260 · 範囲爆風 · 装填 1<br>予備 8発 / 撃破補給 +1発</div></button>
+      </div>
+      <details class="enemy-guide"><summary>敵タイプと武器相性を見る</summary><div class="enemy-guide-grid">
+        <div><b>スカウト / 緑</b><p>小型・高速・蛇行。SMGが有効。</p></div>
+        <div><b>アサルト / 水色</b><p>標準機。アサルトライフルが有効。</p></div>
+        <div><b>ボンバード / 黄</b><p>遠距離砲撃。スナイパー・ロケランが有効。</p></div>
+        <div><b>バスティオン / 橙</b><p>重装甲。ロケラン・スナイパーが有効。SMGに耐性。</p></div>
+        <div><b>イージス / 紫</b><p>シールド搭載。SMGで破壊。シールドはスナイパーに耐性。</p></div>
+        <div><b>ランサー / 青</b><p>予告後に高速弾。スナイパー・アサルトが有効。</p></div>
+      </div><p>得意な武器でダメージ増加。耐性があっても全武器で撃破可能。照準を合わせると相性が表示されます。</p></details>
+      <div class="loadout-bottom"><span id="loadout-summary"></span><div><button id="loadout-back" class="secondary">戻る</button><button id="loadout-start">この装備で出撃 →</button></div></div>
+    </div>
+  </section>
+  <section id="settings" class="hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="settings-panel">
+      <small>CONTROL SETTINGS</small><h2 id="settings-title">操作設定</h2>
+      <label for="sensitivity">マウス感度 <output id="sensitivity-value" for="sensitivity">1.00×</output></label>
+      <input id="sensitivity" type="range" min="0.2" max="3" step="0.05" value="1">
+      <div class="range-labels"><span>低い / 0.20×</span><span>高い / 3.00×</span></div>
+      <p id="settings-help">変更はすぐに反映され、次回も保存されます。<br>プレイ中は Esc または P で開けます。</p>
+      <button id="settings-reset" class="secondary">標準感度に戻す</button>
+      <button id="settings-redeploy" class="secondary">装備を選んで再出撃</button>
+      <button id="settings-leave" class="secondary hidden">オンラインルームを退出</button>
+      <button id="settings-close">閉じる <span>RETURN →</span></button>
+    </div>
+  </section>
+  <div id="touch-controls" aria-label="タッチ操作">
+    <div id="touch-look" aria-label="スワイプして照準"><span>スワイプで照準</span></div>
+    <div id="touch-stick" aria-label="移動スティック"><i id="touch-knob"></i><span>移動</span></div>
+    <button id="touch-fire-left" class="touch-button touch-fire" aria-label="左射撃・長押しで連射"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="m10 32 14-20 3 12 11-3-14 20-3-12Z"/><path d="m8 14 5 4m22 17 5 4"/></svg><span>射撃</span></button><div class="touch-actions"><button id="touch-aim" class="touch-button touch-aim" aria-label="長押しでADS"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="13"/><circle cx="24" cy="24" r="4"/><path d="M24 4v10m0 20v10M4 24h10m20 0h10"/></svg><span>ADS</span></button><button id="touch-reload" class="touch-button touch-reload" aria-label="リロード"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M36 16a15 15 0 1 0 2 15M36 7v10H26"/></svg><span>装填</span></button><button id="touch-dodge" class="touch-button touch-dodge" aria-label="高速回避"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="28" cy="9" r="4"/><path d="m14 22 10-8 8 8 9 1M24 14l-5 15 11 6 2 9m-13-15-9 13M5 16h9M3 25h8"/></svg><span>回避</span></button><button id="touch-fire" class="touch-button touch-fire" aria-label="右射撃・ドラッグで照準"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="m10 32 14-20 3 12 11-3-14 20-3-12Z"/><path d="m8 14 5 4m22 17 5 4"/></svg><span>射撃</span></button></div>
+  </div>
+  <script src="src/rules.js"></script><script src="src/city.js"></script><script src="src/enemies.js"></script><script src="src/combat.js"></script><script src="src/network.js"></script><script src="src/game.js"></script><script src="src/touch.js"></script>
+</body></html>
